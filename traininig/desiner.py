@@ -21,7 +21,7 @@ username = lineedit1.text()
 label2= QLabel("Password")
 lineedit2=QLineEdit()
 
-password = label2.text()
+password = lineedit2.text()
 
 if username and password :
     print("you logged in!")
@@ -70,18 +70,16 @@ secces_label.hide()
 error_label= QLabel("", window)
 error_label.hide()
 
-def login() :
-    if username and password :
+def login():
+    username = lineedit1.text()
+    password = lineedit2.text()
+
+    if username and password:
         error_label.hide()
-        label1.hide()
-        lineedit1.hide()
-        label2.hide()
-        lineedit2.hide()
-        button1.hide()
-        button2.hide()
+        window.hide()
         second_page.show()
     else:
-        error_label.setText("pleas fill in both fields")
+        error_label.setText("Please fill in both fields")
         error_label.show()
 
 button2.clicked.connect(login)
