@@ -10,21 +10,20 @@ window= QWidget()
 window.setWindowTitle("From - [Preview] - Qt Dsiner")
 
 
-
-
-
 label1= QLabel("User Name")
 lineedit1= QLineEdit()
 
+lineedit1.setPlaceholderText("Enter username")
+
 username = lineedit1.text()
+
 
 label2= QLabel("Password")
 lineedit2=QLineEdit()
 
-lineedit1.returnPressed.connect(lineedit2.setFocus)
+lineedit2.setPlaceholderText("Enter password")
 
 lineedit2.setEchoMode(QLineEdit.EchoMode.Password)
-
 
 password = lineedit2.text()
 
