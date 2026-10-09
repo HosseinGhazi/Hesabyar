@@ -21,6 +21,11 @@ username = lineedit1.text()
 label2= QLabel("Password")
 lineedit2=QLineEdit()
 
+lineedit1.returnPressed.connect(lineedit2.setFocus)
+
+lineedit2.setEchoMode(QLineEdit.EchoMode.Password)
+
+
 password = lineedit2.text()
 
 if username and password :
@@ -30,6 +35,7 @@ else:
 
 button1= QPushButton("Cancel")
 button2= QPushButton("Confirm")
+
 
 
 lo1= QHBoxLayout()
@@ -83,6 +89,8 @@ def login():
         error_label.show()
 
 button2.clicked.connect(login)
+
+lineedit2.returnPressed.connect(button2.click)
 
 
 
