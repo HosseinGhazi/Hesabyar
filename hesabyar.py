@@ -174,6 +174,20 @@ def show_products():
 
     welcome.setText("📦 مدیریت کالاها")
 
+    # کادرهای جست‌وجوی کالا
+    name_search = QLineEdit()
+    name_search.setPlaceholderText("🔎 جست‌وجو بر اساس نام کالا")
+
+    id_search = QLineEdit()
+    id_search.setPlaceholderText("🔢 جست‌وجو بر اساس شناسه کالا")
+
+    content.addWidget(name_search)
+    content.addWidget(id_search)
+
+    # ساخت جدول کالاها
+    products_table = QTableWidget()
+    products_table.setColumnCount(7)
+
     # ساخت جدول کالاها
     products_table = QTableWidget()
     products_table.setColumnCount(7)
@@ -239,8 +253,36 @@ def show_products():
         name_input.setFocus()
 
     # به‌روزرسانی جدول
+    # به‌روزرسانی جدول و جست‌وجوی کالاها
     def refresh_table():
-        cursor.execute("SELECT * FROM products")
+        name_text = name_search.text().strip()
+        id_text = id_search.text().strip()
+
+        query = "SELECT * FROM products"
+        conditions = []
+        parameters = []
+
+        # جست‌وجو بر اساس نام
+        if name_text:
+            conditions.append("name LIKE ?")
+            parameters.append(f"%{name_text}%")
+
+        # جست‌وجو بر اساس شناسه
+        if id_text:
+            try:
+                product_id = int(id_text)
+                conditions.append("id = ?")
+                parameters.append(product_id)
+            except ValueError:
+                # اگر شناسه عدد صحیح نباشد، نتیجه‌ای نمایش نده
+                products_table.setRowCount(0)
+                return
+
+        # ترکیب شرط‌ها با AND
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+
+        cursor.execute(query, parameters)
         products = cursor.fetchall()
 
         products_table.setRowCount(0)
@@ -363,8 +405,8 @@ def show_products():
         nonlocal editing_product_id
 
         # اگر دکمه مخفی است، عملیات انجام نشود
-        if not save_button.isVisible():
-            return
+        print("دکمه ثبت قابل مشاهده است:", save_button.isVisible())
+        print("نام کالا:", name_input.text())
 
         name = name_input.text().strip()
         price_text = price_input.text().strip()
@@ -410,6 +452,7 @@ def show_products():
         if errors:
             error_label.setText("\n".join(errors))
             return
+        
 
         if editing_product_id is not None:
             cursor.execute(
@@ -449,6 +492,10 @@ def show_products():
         save_button.setText("ثبت کالا")
         save_button.hide()
         new_item_button.show()
+
+    # اجرای جست‌وجو هنگام تغییر متن
+    name_search.textChanged.connect(refresh_table)
+    id_search.textChanged.connect(refresh_table)
 
     # حرکت با Enter
     name_input.returnPressed.connect(price_input.setFocus)
@@ -540,43 +587,6 @@ def show_reports():
 reports_btn.clicked.connect(show_reports)
 home_reports_btn.clicked.connect(show_reports)
 
-
-# تنظیمات
-def show_page():
-    pages.setCurrentWidget(module_page)
-    welcome.setText("⚙️ تنظیمات در حال توسعه است")
-
-
-settings_btn.clicked.connect(show_page)
-home_settings_btn.clicked.connect(show_page)
-
-purchases_btn.clicked.connect(
-    lambda: show_page("🛒 ماژول خرید در حال توسعه است")
-)
-
-sales_btn.clicked.connect(
-    lambda: show_page("🛍️ ماژول فروش در حال توسعه است")
-)
-
-customers_btn.clicked.connect(
-    lambda: show_page("👥 ماژول مشتریان در حال توسعه است")
-)
-
-suppliers_btn.clicked.connect(
-    lambda: show_page("🏢 ماژول تأمین‌کنندگان در حال توسعه است")
-)
-
-expenses_btn.clicked.connect(
-    lambda: show_page("💰 ماژول هزینه‌ها در حال توسعه است")
-)
-
-reports_btn.clicked.connect(
-    lambda: show_page("📊 ماژول گزارش‌ها در حال توسعه است")
-)
-
-settings_btn.clicked.connect(
-    lambda: show_page("⚙️ تنظیمات در حال توسعه است")
-)
 
 window.setLayout(main_layout)
 
