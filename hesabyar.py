@@ -134,20 +134,24 @@ sidebar.addWidget(settings_btn)
 
 
 # =========================
-# محتوای ماژول
+# محتوای ماژول‌ها
 # =========================
 
-content = QVBoxLayout()
+content_pages = QStackedWidget()
 
+content = QVBoxLayout()
 welcome = QLabel("به نرم افزار حسابداری حساب‌یار خوش آمدید")
 content.addWidget(welcome)
 
+content_widget = QWidget()
+content_widget.setLayout(content)
+
+content_pages.addWidget(content_widget)
 
 module_layout.addLayout(sidebar)
-module_layout.addLayout(content)
+module_layout.addWidget(content_pages)
 
 pages.addWidget(module_page)
-
 
 # =========================
 # قرار دادن صفحات در پنجره
@@ -490,8 +494,7 @@ def show_products():
         clear_form()
 
         save_button.setText("ثبت کالا")
-        save_button.hide()
-        new_item_button.show()
+        
 
     # اجرای جست‌وجو هنگام تغییر متن
     name_search.textChanged.connect(refresh_table)
